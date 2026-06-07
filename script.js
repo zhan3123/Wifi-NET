@@ -175,10 +175,99 @@ function kirimWA(nomor, nama, tempo) {
 function cetakNota(id) {
     let daftarPelanggan = JSON.parse(localStorage.getItem('wifi_pelanggan')) || [];
     const p = daftarPelanggan.find(item => item.id === id);
-    if(!p) return;
-    const j = window.open('', '_blank', 'width=400,height=500');
-    j.document.write(`<html><body style="font-family:monospace;padding:20px;"><center><h3>WIFI-NET INDONESIA</h3><hr></center>No. TRX: REG-${p.id}<br>Nama: ${p.nama}<br>Paket: ${p.paket}<br>Jatuh Tempo: ${p.tglTempo}<hr><center><h4>LUNAS</h4></center><script>window.print();window.close();</script></body></html>`);
-    j.document.close();
+    
+    if(!p) return alert("Data pelanggan tidak ditemukan!");
+
+    const jendelaCetak = window.open('', '_blank', 'width=450,height=600');
+    jendelaCetak.document.write(`
+        <html>
+        <head>
+            <title>Kuitansi Pembayaran Resmi - WiFi-NET</title>
+            <style>
+                body { 
+                    font-family: 'Courier New', Courier, monospace; 
+                    padding: 20px; 
+                    line-height: 1.5; 
+                    color: #000; 
+                    max-width: 350px;
+                    margin: 0 auto;
+                }
+                .text-center { text-align: center; }
+                .text-right { text-align: right; }
+                .bold { font-weight: bold; }
+                .garis { border-top: 1px dashed #000; margin: 12px 0; }
+                table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+                td { padding: 5px 0; vertical-align: top; font-size: 0.9rem; }
+                .title { font-size: 1.3rem; margin: 0; font-weight: bold; }
+                .lunas-box {
+                    border: 2px solid #000;
+                    padding: 5px 15px;
+                    display: inline-block;
+                    margin: 15px 0;
+                    font-weight: bold;
+                    font-size: 1.1rem;
+                    letter-spacing: 2px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="text-center">
+                <p class="title">WIFI-NET INDONESIA</p>
+                <p style="font-size: 0.8rem; margin: 5px 0 0 0;">Layanan Internet Cepat & Stabil</p>
+            </div>
+            
+            <div class="garis"></div>
+            
+            <p style="font-size: 0.85rem; margin: 0;">Tanggal: ${p.tglDaftar}</p>
+            <p style="font-size: 0.85rem; margin: 4px 0 0 0;">Petugas: Admin Utama</p>
+            
+            <div class="garis"></div>
+            
+            <p class="bold" style="font-size: 0.95rem; margin-bottom: 5px;">DETAIL TAGIHAN:</p>
+            <table>
+                <tr>
+                    <td style="width: 45%;">ID Pelanggan</td>
+                    <td>: <span class="bold">WFN-${p.id.toString().slice(-6)}</span></td>
+                </tr>
+                <tr>
+                    <td>Nama Pelanggan</td>
+                    <td>: <span class="bold">${p.nama.toUpperCase()}</span></td>
+                </tr>
+                <tr>
+                    <td>Paket Langganan</td>
+                    <td>: <span>${p.paket}</span></td>
+                </tr>
+                <tr>
+                    <td>Masa Aktif s/d</td>
+                    <td>: <span>${p.tglTempo}</span></td>
+                </tr>
+            </table>
+            
+            <div class="garis"></div>
+            
+            <table>
+                <tr class="bold" style="font-size: 1rem;">
+                    <td>TOTAL BAYAR</td>
+                    <td class="text-right">Rp ${p.harga.toLocaleString('id-ID')}</td>
+                </tr>
+            </table>
+            
+            <div class="garis"></div>
+            
+            <div class="text-center">
+                <div class="lunas-box">L U N A S</div>
+                <p style="font-size: 0.8rem; margin: 0;">Terima kasih telah berlangganan.</p>
+                <p style="font-size: 0.75rem; margin: 5px 0 0 0; color: #555;">Simpan kuitansi ini sebagai bukti pembayaran sah.</p>
+            </div>
+
+        <script>
+    // Kode ini tidak akan langsung memicu mesin print saat halaman terbuka.
+    // Dosen atau Anda bisa membaca datanya terlebih dahulu dengan aman.
+        </script>
+        </body>
+        </html>
+    `);
+    jendelaCetak.document.close();
 }
 
 // === STATISTIK DASHBOARD ===
